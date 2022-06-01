@@ -26,7 +26,7 @@ function degree(f::Basic)
       end
 end
 int(x) = floor(Int, x)
-function FrobeniusSolve(vec::Array{Int64},vs::Int64)
+function FrobeniusSolve(vec::Vector{Int64},vs::Int64)
       res=[];
       js=vs ./vec.|>int;
       for i in Iterators.product((0:k for k in js)...)
@@ -34,11 +34,25 @@ function FrobeniusSolve(vec::Array{Int64},vs::Int64)
       end
       res
 end
-f=y^5*x^3//(z^2+1)+x^4-y^4-z*x*y+2//3
-
+function gd(f::Basic,var::Basic,order::Int64)
+      xs=fill(var,order);
+      diff(f,xs...)
+end
+function gd(f::Basic,vars::Vector{Basic},orders::Vector{Int64})
+      g=f
+      for i=1:length(vars)
+            g=gd(g,vars[i],orders[i])
+      end
+      g
+end
 @funs g
-diff(f,x)
-g = SymFunction("g")
+
+gd(g(x,y,z),[x,y,z],[2,3,2])
+
+
+
+subs(gd(g(x,y,z),[x,y,z],[2,3,2]),g(x,y,z)=>1//(x+2y+z))
 diff(1//(x^2-y-z),x,x,y,y,z,z)
 
-FrobeniusSolve([12, 16, 20, 27],1233)
+FrobeniusSolve([12, 16, 20, 27],133)
+[12; 16; 20; 27]|>typeof
