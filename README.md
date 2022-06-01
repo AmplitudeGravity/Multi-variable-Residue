@@ -7,7 +7,7 @@ where $h_i$ is homogeneous polynomial function and the solution of $h_1=\cdots=h
 MultiResidue[f, {h1, h2,..., hr}, {z1,z2,..., zr}]
 ```
 
-More examples is included in the mathematica code. A julia package is still in development. This need to use CAS in julia, like [SymEngine.jl](https://github.com/symengine/SymEngine.jl)
+More examples is included in the mathematica code. A julia package is still in development. This need to use CAS in julia, e.g.  [Symbolics.jl](https://github.com/JuliaSymbolics/Symbolics.jl) and/or  [SymEngine](https://github.com/symengine/SymEngine.jl).
 
 For general in-homogeneous polynomial function, it is easy to transform to the homogeneous cases by a trick using the global residue theorem. For more details and citations, please
 see and cite the origine papers [arxiv 1609.07621](https://arxiv.org/pdf/1609.07621.pdf) and [arxiv 1709.08503](https://arxiv.org/pdf/1709.08503.pdf).
