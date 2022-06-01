@@ -1,4 +1,5 @@
 using SymEngine
+using LinearAlgebra
 @vars x y z my
 function degree(f::Basic)
       if SymEngine.get_symengine_class(f)==:Add
@@ -24,12 +25,20 @@ function degree(f::Basic)
             0
       end
 end
-
+int(x) = floor(Int, x)
+function FrobeniusSolve(vec::Array{Int64},vs::Int64)
+      res=[];
+      js=vs ./vec.|>int;
+      for i in Iterators.product((0:k for k in js)...)
+             dot(vec,i)==vs ? push!(res,i) : nothing
+      end
+      res
+end
 f=y^5*x^3//(z^2+1)+x^4-y^4-z*x*y+2//3
-degree(f)
 
+@funs g
+diff(f,x)
+g = SymFunction("g")
+diff(1//(x^2-y-z),x,x,y,y,z,z)
 
-
-
-
-
+FrobeniusSolve([12, 16, 20, 27],1233)
