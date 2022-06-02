@@ -1,7 +1,8 @@
+module MultiResidue
 using SymEngine
 using LinearAlgebra
 using InvertedIndices
-@vars x y z my
+export multiResidue, gd, 𝒟,degree, FrobeniusSolve, solve
 function degree(f::Basic)
       if SymEngine.get_symengine_class(f)==:Add
              ls=get_args(f); 
@@ -26,51 +27,55 @@ function degree(f::Basic)
             0
       end
 end
-int(x) = floor(Int, x)
+
+function int(x) 
+      floor(Int, x)
+end
 function FrobeniusSolve(vec::Vector{Int64},vs::Int64)
-      res=[];
-      js=vs ./vec.|>int;
-      for i in Iterators.product((0:k for k in js)...)
-             dot(vec,i)==vs ? push!(res,collect(i)) : nothing
-      end
-      res
+     res=[];
+     js=vs ./vec.|>int;
+     for i in Iterators.product((0:k for k in js)...)
+            dot(vec,i)==vs ? push!(res,collect(i)) : nothing
+     end
+     res
 end
 function gd(f::Basic,var::Basic,order::Int64)
-      if order==0
-            f
-      else
-            xs=fill(var,order);
-            diff(f,xs...)
-      end
+     if order==0
+           f
+     else
+           xs=fill(var,order);
+           diff(f,xs...)
+     end
 end
 function gd(f::Basic,vars::Vector{Basic},orders::Vector{Int64})
-      g=f
-      for i=1:length(vars)
-            g=gd(g,vars[i],orders[i])
-      end
-      g
+     g=f
+     for i=1:length(vars)
+           g=gd(g,vars[i],orders[i])
+     end
+     g
 end
 function  𝒟(f::Basic,vars::Vector{Basic},deg::Int64)
-      n=length(vars);
-      par=FrobeniusSolve(fill(1,n),deg);
-      a=SymFunction("a");
-      res=0;
-      for i=1:length(par)
-           res+=a(par[i]...)gd(f,vars,par[i])
-      end
-      res
+     n=length(vars);
+     par=FrobeniusSolve(fill(1,n),deg);
+     a=SymFunction("a");
+     res=0;
+     for i=1:length(par)
+          res+=a(par[i]...)gd(f,vars,par[i])
+     end
+     res
 end  
 function  𝒟(f::Basic,deg::Int64)
-      vars=f|>get_args;
-      n=length(vars);
-      par=FrobeniusSolve(fill(1,n),deg);
-      a=SymFunction("a");
-      res=0;
-      for i=1:length(par)
-           res+=a(par[i]...)gd(f,vars,par[i])
-      end
-      res
+     vars=f|>get_args;
+     n=length(vars);
+     par=FrobeniusSolve(fill(1,n),deg);
+     a=SymFunction("a");
+     res=0;
+     for i=1:length(par)
+          res+=a(par[i]...)gd(f,vars,par[i])
+     end
+     res
 end  
+
 function monoGen(vars::Vector{Basic},orders::Vector{Int64})
       [vars[i]^orders[i] for i=1:length(vars)]|>prod
 end
@@ -100,8 +105,6 @@ function eqnAnsatz(ideal::Vector{Basic},vars::Vector{Basic},order::Int64)
       push!(homo,inhomo-intersectionNumber);
       homo
 end
-
-
 function solve(ideal::Vector{Basic},vars::Vector{Basic})
       eqns=ideal;
       aVar=vars;
@@ -132,7 +135,7 @@ function solve(ideal::Vector{Basic},vars::Vector{Basic})
       sol=Dict(sol...)
 end
 
-function MultiResidue(num::Basic,homoideal::Vector{Basic},vars::Vector{Basic})
+function multiResidue(num::Basic,homoideal::Vector{Basic},vars::Vector{Basic})
       dOrder=[degree(homoideal[i]) for i=1:length(homoideal)]|>sum;
       dOrder=dOrder-length(vars);
       coeqn=eqnAnsatz(homoideal, vars, dOrder);
@@ -146,10 +149,4 @@ function MultiResidue(num::Basic,homoideal::Vector{Basic},vars::Vector{Basic})
       res=subs(res,sola)
 end
 
-
-
-ideals=[x, y*(x + y), x^2 + y*x + z*y]
-ideals=[y - 2x + z, x^2 *y - x*z^2 + z^3, y^4 + x*y*z^2 - y^2*z^2 + z^4];
-vars=[x,y,z]
-
-MultiResidue((2x + 3y + 4z)/(z - 2),ideals,vars)
+end
