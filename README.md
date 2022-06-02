@@ -1,4 +1,4 @@
-# Short introduction to Multi-variable-Residue
+# Short introduction to multivariate residues
 This program is to calculate the multi-variable residue around zero-dimension intersection point. 
 The main function is called "MultiResidue" which is used to calculate $$\text{Res}_{h_1=\cdots=h_r=0} ~ {f dz_1\wedge dz_2\wedge \cdots \wedge dz_r\over h_1 h_2\cdots h_r},$$
 where $h_i$ is homogeneous polynomial function and the solution of $h_1=\cdots=h_r=0$ is an isolated point $p$. The $f$ function is regular at $p$.
